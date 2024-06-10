@@ -4,7 +4,7 @@ using System.Runtime.InteropServices.Marshalling;
 
 public class Calculator
 {
-    public static void main(String[] args)
+    public static void Main(String[] args)
     {
         Console.WriteLine("Welcome to the Calculator!");
         bool continueYN = true;
@@ -12,7 +12,7 @@ public class Calculator
         while(continueYN)
         {
             Console.WriteLine("Write an expression to calculate in the format [arg1] [operator] [arg2], for DateTimes, use the format (MM/dd/yyyy)");
-            Console.Write("Your expression: ")
+            Console.Write("Your expression: ");
             String input = Console.ReadLine();
             String ans = HandleInput(input);
             Console.WriteLine(ans);
@@ -51,6 +51,7 @@ public class Calculator
                 int index = input.IndexOf(o);
                 arg1 = input.Substring(0, index).Trim();
                 arg2 = input.Substring(index + 1).Trim();
+                break;
             }
         }
 
@@ -63,7 +64,7 @@ public class Calculator
         bool arg2IsNumber = double.TryParse(arg2, out num2);
 
         bool arg1IsDate = DateTime.TryParseExact(arg1, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime1);
-        bool arg2IsDate = DateTime.TryParseExact(arg2, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime1);
+        bool arg2IsDate = DateTime.TryParseExact(arg2, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime2);
 
         //Cases
         /* 1 - I get two doubles aka two numbers and I perform the operation
@@ -79,12 +80,12 @@ public class Calculator
         }
         else if (arg1IsDate && arg2IsNumber)
         {
-            dateTime1.AddDays(num2);
+            dateTime1 = dateTime1.AddDays(num2);
             ans = dateTime1.ToShortDateString();
         }
         else if(arg1IsNumber && arg2IsDate)
         {
-            dateTime2.AddDays(num1);
+            dateTime2 = dateTime2.AddDays(num1);
             ans = dateTime2.ToShortDateString();
         }
         else if(arg1IsDate && arg2IsDate)
@@ -101,7 +102,7 @@ public class Calculator
             }
             else
             {
-                ans = "Your second argument was invalid, please enter a number or a date without any internal operators for the first argument.";
+                ans = "Your second argument was invalid, please enter a number or a date without any internal operators for the second argument.";
             }
         }
 
