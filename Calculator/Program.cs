@@ -11,7 +11,8 @@ public class Calculator
 
         while(continueYN)
         {
-            Console.Write("Write an expression to calculate: ");
+            Console.WriteLine("Write an expression to calculate in the format [arg1] [operator] [arg2], for DateTimes, use the format (MM/dd/yyyy)");
+            Console.Write("Your expression: ")
             String input = Console.ReadLine();
             String ans = HandleInput(input);
             Console.WriteLine(ans);
@@ -35,11 +36,13 @@ public class Calculator
         String arg1 = "";
         String arg2 = "";
 
+        String ans = "";
+
         double num1 = double.NaN;
         double num2 = double.NaN;
 
-        DateTime dateTime1;
-        DateTime dateTime2;
+        DateTime dateTime1 = DateTime.Now;
+        DateTime dateTime2 = DateTime.Now;
 
         foreach (String o in Operators)
         {
@@ -59,7 +62,8 @@ public class Calculator
         bool arg1IsNumber = double.TryParse(arg1, out num1);
         bool arg2IsNumber = double.TryParse(arg2, out num2);
 
-        bool arg1IsDate = DateTime.TryParseExact(arg1, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out arg1);
+        bool arg1IsDate = DateTime.TryParseExact(arg1, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime1);
+        bool arg2IsDate = DateTime.TryParseExact(arg2, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime1);
 
         //Cases
         /* 1 - I get two doubles aka two numbers and I perform the operation
@@ -69,5 +73,57 @@ public class Calculator
          * */
 
 
+        if (arg1IsNumber && arg2IsNumber)
+        {
+            ans ="" + HandleNums(num1, num2, oper);
+        }
+        else if (arg1IsDate && arg2IsNumber)
+        {
+            dateTime1.AddDays(num2);
+            ans = dateTime1.ToShortDateString();
+        }
+        else if(arg1IsNumber && arg2IsDate)
+        {
+            dateTime2.AddDays(num1);
+            ans = dateTime2.ToShortDateString();
+        }
+        else if(arg1IsDate && arg2IsDate)
+        {
+            TimeSpan difference = dateTime2 - dateTime1;
+            ans = $"Difference: {difference.TotalDays} days, {difference.TotalHours} hours, {difference.TotalMinutes} minutes";
+        }
+        else
+        {
+            //ans = HandleError(arg1IsNumber, arg2IsNumber, arg1IsDate, arg2IsDate);
+            if(!arg1IsNumber && !arg1IsDate)
+            {
+                ans = "Your first argument was invalid, please enter a number or a date without any internal operators for the first argument.";
+            }
+            else
+            {
+                ans = "Your second argument was invalid, please enter a number or a date without any internal operators for the first argument.";
+            }
+        }
+
+        return ans;
+
+    }
+
+    public static double HandleNums(double num1, double num2, String oper)
+    {
+        switch (oper)
+        {
+            case "+":
+                return num1 + num2;
+            case "-":
+                return num1 - num2;
+            case "*":
+                return num1 * num2;
+            case "/":
+                return num2 != 0? num1 / num2 : throw new DivideByZeroException();
+            case "%":
+                return num2 != 0 ? num1 % num2 : throw new DivideByZeroException();
+        }
+        return num1;
     }
 }
