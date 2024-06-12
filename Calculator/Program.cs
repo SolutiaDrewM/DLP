@@ -44,6 +44,8 @@ public class Calculator
         DateTime dateTime1 = DateTime.Now;
         DateTime dateTime2 = DateTime.Now;
 
+
+        //Doesn't handle case of negative numbers input i.e. -50 - -30 = -20
         foreach (String o in Operators)
         {
             if(input.Contains(o)) {
@@ -57,7 +59,7 @@ public class Calculator
 
         if (oper == "")
         {
-            Console.WriteLine("Missing an operator, please add one of +, -, *, /, %");
+            return "Missing an operator, please add one of +, -, *, /, %";
         }
 
         bool arg1IsNumber = double.TryParse(arg1, out num1);
@@ -76,7 +78,15 @@ public class Calculator
 
         if (arg1IsNumber && arg2IsNumber)
         {
-            ans ="" + HandleNums(num1, num2, oper);
+            try
+            {
+                ans = "" + HandleNums(num1, num2, oper);
+            } catch (Exception ex)
+            {
+                //Allows the handler to return the divide by zero exception, but calculator continues
+                ans += ex.ToString();
+            }
+            
         }
         else if (arg1IsDate && arg2IsNumber)
         {
@@ -95,7 +105,6 @@ public class Calculator
         }
         else
         {
-            //ans = HandleError(arg1IsNumber, arg2IsNumber, arg1IsDate, arg2IsDate);
             if(!arg1IsNumber && !arg1IsDate)
             {
                 ans = "Your first argument was invalid, please enter a number or a date without any internal operators for the first argument.";
